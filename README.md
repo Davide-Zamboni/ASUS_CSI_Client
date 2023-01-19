@@ -2,7 +2,7 @@
 This project allows you to extract channel state information (CSI) of the Broadcom bcm4366c0 Wi-Fi Chip used in Asus RT-AC86U and send them threw a RabbitMQ server.
 ## Requrements
 - [Nexmon CSI extractor](https://github.com/seemoo-lab/nexmon_csi) installed on the router.
-- aarch64 toolchain for cross compilation
+- aarch64 toolchain for cross compilation.
 ## Installation guide
 1. Clone the repository: `git clone https://github.com/Davide-Zamboni/ASUS_CSI_Client.git`.
 2. Change the directory of the RabbitMQ cross-compiled library in lines 13, 14, and 15 to the directory of where you cloned the repository (`/CC libraries/rabbitmq-c-0.11.0`).
