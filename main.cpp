@@ -144,7 +144,7 @@ int main(int argc, char const *const *argv) {
     exchange = "amq.direct";
     routingkey = "test";
     bindingkey = "test";
-    queue = "rpc_queue";
+    queue = "csi_data";
 
     // Creation of the connection
     conn = amqp_new_connection();
@@ -266,7 +266,7 @@ int main(int argc, char const *const *argv) {
             myfile += buf;
             myfile += '.';
             myfile += timestamp_millies;
-            myfile += "', 'mac': ";
+            myfile += "', 'mac': '";
 
             for (int j = 0; j < 12; j += 2) {
                 myfile += mac[j];
@@ -291,7 +291,14 @@ int main(int argc, char const *const *argv) {
                     myfile += ',';
                 }
             }
-            myfile += "]} ";
+
+            myfile += "], 'maxcore': 4, 'core': ";
+            myfile += to_string(core);
+            myfile += ", 'rsxx': ";
+            myfile += to_string(rxss);
+            myfile += ", 'nss': ";
+            myfile += to_string(Nss);
+            myfile += "}";
 
             // Sending the file to the RabbitMQ Server
             messagebody = myfile.c_str();
