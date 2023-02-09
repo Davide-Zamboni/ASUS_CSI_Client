@@ -142,8 +142,8 @@ int main(int argc, char const *const *argv) {
     hostname = argv[1];
     port = 5672;
     exchange = "amq.direct";
-    routingkey = "test";
-    bindingkey = "test";
+    routingkey = "csi_data";
+    bindingkey = "csi_data";
     queue = "csi_data";
 
     // Creation of the connection
@@ -261,12 +261,12 @@ int main(int argc, char const *const *argv) {
             char buf[80];
 
             ts = *localtime(&timestamp);
-            strftime(buf, sizeof(buf), "%a %Y-%m-%d %H:%M:%S", &ts);
-            myfile += "'";
+            strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &ts);
+            myfile += "\"";
             myfile += buf;
             myfile += '.';
-            myfile += timestamp_millies;
-            myfile += "', 'mac': '";
+            myfile += to_string(timestamp_millies); //timestamp millies
+            myfile += "\", \"mac\": \"";
 
             for (int j = 0; j < 12; j += 2) {
                 myfile += mac[j];
@@ -276,27 +276,27 @@ int main(int argc, char const *const *argv) {
                 }
             }
 
-            myfile += "', 'rssi': -56, 'csi_amplitude': [";
+            myfile += "\", \"rssi\": -56, \"csi_amplitude\": [";
 
             for (int j = 0; j < n_fft; ++j) {
                 myfile += to_string(csi_buff[j].real());
                 if (j < n_fft - 1) {
-                    myfile += ',';
+                    myfile += ", ";
                 }
             }
-            myfile += "], 'csi_phase': [";
+            myfile += "], \"csi_phase\": [";
             for (int j = 0; j < n_fft; ++j) {
                 myfile += to_string(csi_buff[j].imag());
                 if (j < n_fft - 1) {
-                    myfile += ',';
+                    myfile += ", ";
                 }
             }
 
-            myfile += "], 'maxcore': 4, 'core': ";
+            myfile += "], \"maxcore\": 4, \"core\": ";
             myfile += to_string(core);
-            myfile += ", 'rsxx': ";
+            myfile += ", \"rsxx\": ";
             myfile += to_string(rxss);
-            myfile += ", 'nss': ";
+            myfile += ", \"nss\": ";
             myfile += to_string(Nss);
             myfile += "}";
 
