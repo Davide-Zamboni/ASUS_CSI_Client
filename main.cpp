@@ -256,7 +256,7 @@ int main(int argc, char const *const *argv) {
             // Creating the json File
             string myfile;
 
-            myfile += "{'timestamp': ";
+            myfile += "{\"timestamp\": ";
             struct tm ts;
             char buf[80];
 
