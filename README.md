@@ -40,5 +40,5 @@ ssh admin@<address of your rt-ac86u> "/bin/chmod +x /jffs/start_sniffing.sh"
 cd /jffs
 ./start_sniffing.sh <Server IP> <coremask> <nssmask> <Bandwith> <Channel> <Server Port>
 ```
-By default the configuration of the sctipt is set to `core = 0xf`, `nss = 0xf`, `bandith = 80`, `channel = 157`, `server port = 5672`. You must specify at least a Server IP.
+By default the configuration of the sctipt is set to `core = 0xf`, `nss = 1`, `bandith = 80`, `channel = 157`, `server port = 5672`. You must specify at least a Server IP.
 
