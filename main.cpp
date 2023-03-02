@@ -5,7 +5,7 @@
 #include <complex>
 #include <fstream>
 // configuration
-#define BW 20
+#define BW 80
 #define HOFFSET 16
 #define k_tof_unpack_sgn_mask (1<<31)
 
