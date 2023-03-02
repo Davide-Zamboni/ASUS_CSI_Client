@@ -5,7 +5,6 @@
 #include <complex>
 #include <fstream>
 // configuration
-#define BW 80
 #define HOFFSET 16
 #define k_tof_unpack_sgn_mask (1<<31)
 
@@ -96,6 +95,7 @@ int main(int argc, char const *const *argv) {
     bpf_u_int32 net;        // Our IP
     struct pcap_pkthdr header;    // The header that pcap gives us
     const u_char *data;        // The actual packet
+    int BW = stoi(argv[3]);
     int n_fft = BW * 3.2;
 
     string mac;     // Packet mac address
@@ -140,7 +140,7 @@ int main(int argc, char const *const *argv) {
     amqp_connection_state_t conn;
 
     hostname = argv[1];
-    port = 5672;
+    port = stoi(argv[2]);
     exchange = "amq.direct";
     routingkey = "csi_data";
     bindingkey = "csi_data";
@@ -177,7 +177,7 @@ int main(int argc, char const *const *argv) {
         // Grab a packet
         data = pcap_next(handle, &header);
 
-        printf("Ho trovato un pacchetto\n");
+        printf("Searching for packets...\n");
 
         // If the sniffed packet has the same timestamp as the one before is ignored
         if (header.len > 0 && (header.ts.tv_usec != timestamp_millies)) { // || NSSS != ...
@@ -196,12 +196,13 @@ int main(int argc, char const *const *argv) {
                 sprintf(buffer, "%.2x", data[i]);
                 packet += buffer;
             }
-            cout << packet << '\n';
+
 
             // Saving mac address
             mac = packet.substr(92, 12);
-            uint32_t payload[packet.length() / 8];
+            cout << "Packet found! MAC SOURCE: " << mac << '\n';
 
+            uint32_t payload[packet.length() / 8];
             // Series of conversions to extract CSI phase and amplitude
             int pos = 0;
             // Convert hex payload to uint32

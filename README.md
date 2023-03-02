@@ -25,5 +25,20 @@ cd /jffs
 ./makecsiparams -c 36/80 -C 4 -N 1 -m 12:13:31:AC:1F:F9 -b 0x88
 ./nexutil -Ieth6 -s500 -b -l34 -v<string genereted with makecsiparams>
 /usr/sbin/wl -i eth6 monitor 1
-./CSI_Client <address of your RabbitMQ Server>
+./CSI_Client <address of your RabbitMQ Server> <Port> <Bandwith>
 ```
+
+Alternatively you can use the simple script provided in the utils folder:
+1. Copy the script for using the tool:
+```
+cd /utils
+scp start_sniffing.sh admin@<address of your rt-ac86u>:/jffs/start_sniffing.sh
+ssh admin@<address of your rt-ac86u> "/bin/chmod +x /jffs/start_sniffing.sh"
+```
+2. Run the script:
+```
+cd /jffs
+./start_sniffing.sh <Server IP> <coremask> <nssmask> <Bandwith> <Channel> <Server Port>
+```
+By default the configuration of the sctipt is set to `core = 0xf`, `nss = 0xf`, `bandith = 80`, `channel = 157`, `server port = 5672`. You must specify at least a Server IP.
+
