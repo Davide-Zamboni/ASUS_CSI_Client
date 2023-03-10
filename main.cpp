@@ -14,6 +14,29 @@
 
 using namespace std;
 
+void swap(complex<double> *v1, complex<double> *v2) {
+    complex<double> tmp = *v1;
+    *v1 = *v2;
+    *v2 = tmp;
+}
+
+void fftshift(complex<double> *data, int count) {
+    int k = 0;
+    int c = (int) floor((float) count / 2);
+    // For odd and for even numbers of element use different algorithm
+    if (count % 2 == 0) {
+        for (k = 0; k < c; k++)
+            swap(&data[k], &data[k + c]);
+    } else {
+        complex<double> tmp = data[0];
+        for (k = 0; k < c; k++) {
+            data[k] = data[c + k + 1];
+            data[c + k + 1] = data[k + 1];
+        }
+        data[c] = tmp;
+    }
+}
+
 void unpack_float_acphy(int nbits, int autoscale, int shft,
                         int fmt, int nman, int nexp, int nfft,
                         uint32_t *H, int32_t *Hout) {
@@ -34,8 +57,8 @@ void unpack_float_acphy(int nbits, int autoscale, int shft,
     e_shift = 1;
     maxbit = -e_p;
     for (i = 0; i < nfft; i++) {
-        vi = (int32_t) ((H[i] >> (nexp + nman)) & iq_mask);
-        vq = (int32_t) ((H[i] >> nexp) & iq_mask);
+        vi = (int32_t)((H[i] >> (nexp + nman)) & iq_mask);
+        vq = (int32_t)((H[i] >> nexp) & iq_mask);
         e = (int) (H[i] & e_mask);
         if (e >= e_p)
             e -= (e_p << 1);
@@ -277,21 +300,45 @@ int main(int argc, char const *const *argv) {
                 }
             }
 
+            fftshift(csi_buff, n_fft);
+
             myfile += "\", \"rssi\": -56, \"csi_amplitude\": [";
 
-            for (int j = 0; j < n_fft; ++j) {
-                myfile += to_string(csi_buff[j].real());
-                if (j < n_fft - 1) {
+            int exclude[] = {-128, -127, -126, -125, -124, -123, -1, 0, 1, 123, 124, 125, 126, 127};
+            int exclude_size = sizeof(exclude) / sizeof(exclude[0]);
+
+            for (int j = -128; j < n_fft / 2; ++j) {
+                bool should_exclude = false;
+                for (int k = 0; k < exclude_size; ++k) {
+                    if (j == exclude[k]) {
+                        should_exclude = true;
+                        break;
+                    }
+                }
+                if (!should_exclude) {
+                    myfile += to_string(csi_buff[j + 128].real());
                     myfile += ", ";
                 }
             }
+            long filepos = myfile.tellp();
+            myfile.seekp(filepos - 1);
+
             myfile += "], \"csi_phase\": [";
-            for (int j = 0; j < n_fft; ++j) {
-                myfile += to_string(csi_buff[j].imag());
-                if (j < n_fft - 1) {
+            for (int j = -128; j < n_fft / 2; ++j) {
+                bool should_exclude = false;
+                for (int k = 0; k < exclude_size; ++k) {
+                    if (j == exclude[k]) {
+                        should_exclude = true;
+                        break;
+                    }
+                }
+                if (!should_exclude) {
+                    myfile += to_string(csi_buff[j + 128].imag());
                     myfile += ", ";
                 }
             }
+            filepos = myfile.tellp();
+            myfile.seekp(filepos - 1);
 
             myfile += "], \"maxcore\": 4, \"core\": ";
             myfile += to_string(core);
