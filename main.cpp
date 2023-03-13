@@ -317,11 +317,11 @@ int main(int argc, char const *const *argv) {
                 }
                 if (!should_exclude) {
                     myfile += to_string(csi_buff[j + 128].real());
-                    myfile += ", ";
+                    if(j != 122) {
+                        myfile += ", ";
+                    }
                 }
             }
-            long filepos = myfile.tellp();
-            myfile.seekp(filepos - 1);
 
             myfile += "], \"csi_phase\": [";
             for (int j = -128; j < n_fft / 2; ++j) {
@@ -334,11 +334,11 @@ int main(int argc, char const *const *argv) {
                 }
                 if (!should_exclude) {
                     myfile += to_string(csi_buff[j + 128].imag());
-                    myfile += ", ";
+                    if(j!=122) {
+                        myfile += ", ";
+                    }
                 }
             }
-            filepos = myfile.tellp();
-            myfile.seekp(filepos - 1);
 
             myfile += "], \"maxcore\": 4, \"core\": ";
             myfile += to_string(core);
