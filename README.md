@@ -6,12 +6,12 @@ This project allows you to extract channel state information (CSI) of the Broadc
 ## Installation guide
 1. Clone the repository: `git clone https://github.com/Davide-Zamboni/ASUS_CSI_Client.git`.
 2. Change the directory of the RabbitMQ cross-compiled library in lines 13, 14, and 15 to the directory of where you cloned the repository (`/CC libraries/rabbitmq-c-0.11.0`).
-3. Set your parameters for the sniffing (line 8, 91 and 94) and the comunication with the server (line 143 to 163) 
-4. Cross-compile the code specifying the cross-compiled libraries directory: 
+
+3. Cross-compile the code specifying the cross-compiled libraries directory: 
 ```
 aarch64-linux-gnu-g++ main.cpp -o CSI_Client -lpcap -L/.../libpcap -static -lrabbitmq -I/.../rabbitmq-c-0.11.0/librabbitmq
 ```
-5. Copy the binary file in the router:
+4. Copy the binary file in the router:
 ```
 scp CSI_Client admin@<address of your rt-ac86u>:/jffs/CSI_Client
 ssh admin@<address of your rt-ac86u> "/bin/chmod +x /jffs/CSI_Client"
