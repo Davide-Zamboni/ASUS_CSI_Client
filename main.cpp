@@ -302,7 +302,7 @@ int main(int argc, char const *const *argv) {
 
             fftshift(csi_buff, n_fft);
 
-            myfile += "\", \"rssi\": -56, \"csi_amplitude\": [";
+            myfile += "\", \"rssi\": -56, \"csi\": [";
 
             int exclude[] = {-128, -127, -126, -125, -124, -123, -1, 0, 1, 123, 124, 125, 126, 127};
             int exclude_size = sizeof(exclude) / sizeof(exclude[0]);
@@ -316,25 +316,12 @@ int main(int argc, char const *const *argv) {
                     }
                 }
                 if (!should_exclude) {
-                    myfile += to_string(csi_buff[j + 128].real());
+                    myfile += "(";
+                    myfile += to_string(int(csi_buff[j + 128].real()));
+                    myfile += ",";
+                    myfile += to_string(int(csi_buff[j + 128].imag()));
+                    myfile += ")";
                     if(j != 122) {
-                        myfile += ", ";
-                    }
-                }
-            }
-
-            myfile += "], \"csi_phase\": [";
-            for (int j = -128; j < n_fft / 2; ++j) {
-                bool should_exclude = false;
-                for (int k = 0; k < exclude_size; ++k) {
-                    if (j == exclude[k]) {
-                        should_exclude = true;
-                        break;
-                    }
-                }
-                if (!should_exclude) {
-                    myfile += to_string(csi_buff[j + 128].imag());
-                    if(j!=122) {
                         myfile += ", ";
                     }
                 }
