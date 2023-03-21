@@ -120,6 +120,8 @@ int main(int argc, char const *const *argv) {
     const u_char *data;        // The actual packet
     int BW = stoi(argv[3]);
     int n_fft = BW * 3.2;
+    string verbose_ison = argv[4];
+    string verbose_mode = "verbose";
 
     string mac;     // Packet mac address
     time_t timestamp;   // Packet timestamp
@@ -194,13 +196,19 @@ int main(int argc, char const *const *argv) {
                     amqp_empty_table);
     die_on_amqp_error(amqp_get_rpc_reply(conn), "Unbinding");
 
+    if (verbose_mode != verbose_ison) {
+        printf("Sniffing has started! Use verbose mode for more data\n");
+    }
+
     // Continuous sniffing
     while (true) {
 
         // Grab a packet
         data = pcap_next(handle, &header);
 
-        printf("Searching for packets...\n");
+        if (verbose_mode == verbose_ison) {
+            printf("Searching for packets...\n");
+        }
 
         // If the sniffed packet has the same timestamp as the one before is ignored
         if (header.len > 0 && (header.ts.tv_usec != timestamp_millies)) { // || NSSS != ...
@@ -223,7 +231,9 @@ int main(int argc, char const *const *argv) {
 
             // Saving mac address
             mac = packet.substr(92, 12);
-            cout << "Packet found! MAC SOURCE: " << mac << '\n';
+            if (verbose_mode == verbose_ison) {
+                cout << "Packet found! MAC SOURCE: " << mac << '\n';
+            }
 
             uint32_t payload[packet.length() / 8];
             // Series of conversions to extract CSI phase and amplitude

@@ -2,14 +2,15 @@
 
 # Davide Zamboni License
 
-usage_str="usage: $0 <Server IP> <coremask> <nssmask> <Bandwith> <Channel> <Server Port>\n"
+usage_str="usage: $0 <Server IP> <verbose/noverbose> <coremask> <nssmask> <Bandwith> <Channel> <Server Port>\n"
 
 IP=$1
-CORE=$2
-NSS=$3
-BW=$4
-CHANNEL=$5
-PORT=$6
+VERBOSE=$2
+CORE=$3
+NSS=$4
+BW=$5
+CHANNEL=$6
+PORT=$7
 
 MAKECSIPARAMS="/jffs/makecsiparams"
 NEXUTIL="/jffs/nexutil"
@@ -26,42 +27,50 @@ if [ "$#" -lt 2 ]; then
     NEXUTILV=$(${MAKECSIPARAMS} -c 157/80 -C 0xf -N 1 -m 00:11:22:33:44:66 —b 0x08)
     ${NEXUTIL} -Ieth6 -s500 -b -l34 -v${NEXUTILV}
     ${WL} -i eth6 monitor 1
-    ${CLIENT} ${IP} 5672 80
+    ${CLIENT} ${IP} 5672 80 noverbose
     exit
 fi
 
 if [ "$#" -lt 3 ]; then
-    ${PRINTF} "Specify at least Core and NSS! \n ${usage_str}"
+    NEXUTILV=$(${MAKECSIPARAMS} -c 157/80 -C 0xf -N 1 -m 00:11:22:33:44:66 —b 0x08)
+    ${NEXUTIL} -Ieth6 -s500 -b -l34 -v${NEXUTILV}
+    ${WL} -i eth6 monitor 1
+    ${CLIENT} ${IP} 5672 80 ${VERBOSE}
     exit
 fi
 
 if [ "$#" -lt 4 ]; then
-    NEXUTILV=$(${MAKECSIPARAMS} -c 157/80 -C ${CORE} -N ${NSS} -m 00:11:22:33:44:66 —b 0x08)
-    ${NEXUTIL} -Ieth6 -s500 -b -l34 -v${NEXUTILV}
-    ${WL} -i eth6 monitor 1
-    ${CLIENT} ${IP} 5672 80
+    ${PRINTF} "Specify at least Core and NSS! \n ${usage_str}"
     exit
 fi
 
 if [ "$#" -lt 5 ]; then
-    NEXUTILV=$(${MAKECSIPARAMS} -c 157/${BW} -C ${CORE} -N ${NSS} -m 00:11:22:33:44:66 —b 0x08)
+    NEXUTILV=$(${MAKECSIPARAMS} -c 157/80 -C ${CORE} -N ${NSS} -m 00:11:22:33:44:66 —b 0x08)
     ${NEXUTIL} -Ieth6 -s500 -b -l34 -v${NEXUTILV}
     ${WL} -i eth6 monitor 1
-    ${CLIENT} ${IP} 5672 ${BW}
+    ${CLIENT} ${IP} 5672 80 ${VERBOSE}
     exit
 fi
 
 if [ "$#" -lt 6 ]; then
+    NEXUTILV=$(${MAKECSIPARAMS} -c 157/${BW} -C ${CORE} -N ${NSS} -m 00:11:22:33:44:66 —b 0x08)
+    ${NEXUTIL} -Ieth6 -s500 -b -l34 -v${NEXUTILV}
+    ${WL} -i eth6 monitor 1
+    ${CLIENT} ${IP} 5672 ${BW} ${VERBOSE}
+    exit
+fi
+
+if [ "$#" -lt 7 ]; then
     NEXUTILV=$(${MAKECSIPARAMS} -c ${CHANNEL}/${BW} -C ${CORE} -N ${NSS} -m 00:11:22:33:44:66 —b 0x08)
     ${NEXUTIL} -Ieth6 -s500 -b -l34 -v${NEXUTILV}
     ${WL} -i eth6 monitor 1
-    ${CLIENT} ${IP} 5672 ${BW}
+    ${CLIENT} ${IP} 5672 ${BW} ${VERBOSE}
     exit
 fi
 
 NEXUTILV=$(${MAKECSIPARAMS} -c ${CHANNEL}/${BW} -C ${CORE} -N ${NSS} -m 00:11:22:33:44:66 —b 0x08)
 ${NEXUTIL} -Ieth6 -s500 -b -l34 -v${NEXUTILV}
 ${WL} -i eth6 monitor 1
-${CLIENT} ${IP} ${PORT} ${BW}
+${CLIENT} ${IP} ${PORT} ${BW} ${VERBOSE}
 exit
 
