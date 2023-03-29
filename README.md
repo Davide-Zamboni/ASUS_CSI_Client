@@ -38,7 +38,7 @@ ssh admin@<address of your rt-ac86u> "/bin/chmod +x /jffs/start_sniffing.sh"
 2. Run the script:
 ```
 cd /jffs
-./start_sniffing.sh <Server IP> <coremask> <verbose/noverbose> <nssmask> <Bandwith> <Channel> <Server Port>
+./start_sniffing.sh <Server IP> <verbose/noverbose> <coremask> <nssmask> <Bandwith> <Channel> <Server Port>
 ```
 By default the configuration of the sctipt is set to `noverbose`, `core = 0xf`, `nss = 1`, `bandith = 80`, `channel = 157`, `server port = 5672`. You must specify at least a Server IP.
 
