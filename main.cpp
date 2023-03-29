@@ -325,12 +325,23 @@ int main(int argc, char const *const *argv) {
                         break;
                     }
                 }
+                int real = int(csi_buff[j + 128].real());
+                int img = int(csi_buff[j + 128].imag());
                 if (!should_exclude) {
                     myfile += "(";
-                    myfile += to_string(int(csi_buff[j + 128].real()));
-                    myfile += ",";
-                    myfile += to_string(int(csi_buff[j + 128].imag()));
-                    myfile += ")";
+
+                    if (real > 0){
+                        myfile += "+";
+                    }
+                    myfile += to_string(real);
+
+                    if (img > 0){
+                        myfile += "+";
+                    }
+
+                    myfile += to_string(img);
+                    myfile += "j)";
+
                     if(j != 122) {
                         myfile += ", ";
                     }
