@@ -328,7 +328,6 @@ int main(int argc, char const *const *argv) {
                 int real = int(csi_buff[j + 128].real());
                 int img = int(csi_buff[j + 128].imag());
                 if (!should_exclude) {
-                    myfile += "(";
 
                     if (real > 0){
                         myfile += "+";
@@ -340,7 +339,7 @@ int main(int argc, char const *const *argv) {
                     }
 
                     myfile += to_string(img);
-                    myfile += "j)";
+                    myfile += "j";
 
                     if(j != 122) {
                         myfile += ", ";
